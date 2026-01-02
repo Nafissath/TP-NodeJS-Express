@@ -100,4 +100,11 @@ export class UserService {
       data: { disabledAt: new Date() },
     });
   }
+
+  static async getLoginHistory(userId) {
+    return prisma.loginHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }

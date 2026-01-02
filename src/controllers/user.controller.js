@@ -143,4 +143,12 @@ export class UserController {
       message: "Votre compte a été désactivé avec succès",
     });
   }
+
+  static async getLoginHistory(req, res) {
+    const history = await UserService.getLoginHistory(req.user.userId);
+    res.json({
+      success: true,
+      history,
+    });
+  }
 }

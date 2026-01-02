@@ -10,6 +10,7 @@ router.get("/me", auth, asyncHandler(UserController.getMe));
 router.patch("/me", auth, asyncHandler(UserController.updateMe));
 router.post("/change-password", auth, asyncHandler(UserController.changePassword));
 router.delete("/me", auth, asyncHandler(UserController.deleteMe));
+router.get("/login-history", auth, asyncHandler(UserController.getLoginHistory));
 router.get("/", auth, asyncHandler(UserController.getAll));
 router.get("/:id", auth, asyncHandler(UserController.getById));
 
