@@ -4,7 +4,7 @@ import { ConflictException, UnauthorizedException, NotFoundException } from "#li
 
 export class UserService {
   static async register(data) {
-    const { email, password, name } = data;
+    const { email, password, firstName, lastName } = data;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -14,23 +14,42 @@ export class UserService {
     const hashedPassword = await hashPassword(password);
 
     return prisma.user.create({
-      data: { email, password: hashedPassword, name },
+     data: { 
+        email, 
+        password: hashedPassword, 
+        firstName, 
+        lastName 
+      },   
     });
   }
 
   static async login(email, password) {
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user || !(await verifyPassword(user.password, password))) {
+    if (!user || !user.password || !(await verifyPassword(user.password, password))) {
       throw new UnauthorizedException("Identifiants invalides");
     }
 
     return user;
   }
 
-  static async findAll() {
-    return prisma.user.findMany();
+
+  // Whitelist des Refresh Tokens 
+  static async createRefreshToken(userId, token, expiresAt, ipAddress, userAgent) {
+    return await prisma.refreshToken.create({
+      data: {
+        token,
+        userId,
+        expiresAt,
+        ipAddress,
+        userAgent
+      }
+    });
   }
+
+   static async findAll() {
+     return prisma.user.findMany();
+   }
 
   static async findById(id) {
     const user = await prisma.user.findUnique({ where: { id } });
