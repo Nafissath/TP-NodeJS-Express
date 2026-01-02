@@ -61,14 +61,14 @@ export class UserController {
 
   // Blacklist l'accessToken actuel
   static async logout(req, res) {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
-    return res.status(204).end(); 
-  }
+    const authHeader = req.headers.authorization;
 
-  const token = authHeader.split(" ")[1];
-  const { refreshToken } = req.body;
+    if (!authHeader) {
+      return res.status(204).end();
+    }
+
+    const token = authHeader.split(" ")[1];
+    const { refreshToken } = req.body;
 
     // 1. Blacklister l'access token 
     await prisma.blacklistedAccessToken.create({
@@ -101,6 +101,14 @@ export class UserController {
 
   static async getById(req, res) {
     const user = await UserService.findById(req.params.id);
+    res.json({
+      success: true,
+      user: UserDto.transform(user),
+    });
+  }
+
+  static async getMe(req, res) {
+    const user = await UserService.findById(req.user.userId);
     res.json({
       success: true,
       user: UserDto.transform(user),
