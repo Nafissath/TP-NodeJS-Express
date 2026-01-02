@@ -14,12 +14,12 @@ export class UserService {
     const hashedPassword = await hashPassword(password);
 
     return prisma.user.create({
-     data: { 
-        email, 
-        password: hashedPassword, 
-        firstName, 
-        lastName 
-      },   
+      data: {
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName
+      },
     });
   }
 
@@ -47,9 +47,9 @@ export class UserService {
     });
   }
 
-   static async findAll() {
-     return prisma.user.findMany();
-   }
+  static async findAll() {
+    return prisma.user.findMany();
+  }
 
   static async findById(id) {
     const user = await prisma.user.findUnique({ where: { id } });
@@ -59,5 +59,19 @@ export class UserService {
     }
 
     return user;
+  }
+
+  static async update(userId, data) {
+    if (data.email) {
+      const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
+      if (existingUser && existingUser.id !== userId) {
+        throw new ConflictException("Cet email est déjà utilisé");
+      }
+    }
+
+    return prisma.user.update({
+      where: { id: userId },
+      data: data,
+    });
   }
 }

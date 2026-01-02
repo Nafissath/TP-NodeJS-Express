@@ -12,3 +12,9 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Mot de passe requis"),
 });
 
+export const updateProfileSchema = z.object({
+  firstName: z.string().min(2, "Le prénom doit faire au moins 2 caractères").optional(),
+  lastName: z.string().min(2, "Le nom doit faire au moins 2 caractères").optional(),
+  email: z.string().email("Email invalide").optional(),
+});
+
