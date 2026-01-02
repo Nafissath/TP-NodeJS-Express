@@ -18,3 +18,6 @@ export const updateProfileSchema = z.object({
   email: z.string().email("Email invalide").optional(),
 });
 
+
+
+
