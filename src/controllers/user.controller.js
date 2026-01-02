@@ -1,7 +1,7 @@
 import { UserService } from "#services/user.service";
 import { UserDto } from "#dto/user.dto";
 import { signAccessToken, signRefreshToken } from "#lib/jwt";
-import { registerSchema, loginSchema } from "#schemas/user.schema";
+import { registerSchema, loginSchema, updateProfileSchema } from "#schemas/user.schema";
 import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
 
@@ -112,6 +112,17 @@ export class UserController {
     res.json({
       success: true,
       user: UserDto.transform(user),
+    });
+  }
+
+  static async updateMe(req, res) {
+    const validatedData = validateData(updateProfileSchema, req.body);
+    const user = await UserService.update(req.user.userId, validatedData);
+
+    res.json({
+      success: true,
+      user: UserDto.transform(user),
+      message: "Profil mis à jour avec succès",
     });
   }
 }
