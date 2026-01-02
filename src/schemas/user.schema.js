@@ -18,6 +18,15 @@ export const updateProfileSchema = z.object({
   email: z.string().email("Email invalide").optional(),
 });
 
+export const changePasswordSchema = z.object({
+  oldPassword: z.string().min(1, "L'ancien mot de passe est requis"),
+  newPassword: z.string().min(8, "Le nouveau mot de passe doit faire au moins 8 caractères"),
+}).refine((data) => data.oldPassword !== data.newPassword, {
+  message: "Le nouveau mot de passe doit être différent de l'ancien",
+  path: ["newPassword"],
+});
+
+
 
 
 

@@ -1,7 +1,7 @@
 import { UserService } from "#services/user.service";
 import { UserDto } from "#dto/user.dto";
 import { signAccessToken, signRefreshToken } from "#lib/jwt";
-import { registerSchema, loginSchema, updateProfileSchema } from "#schemas/user.schema";
+import { registerSchema, loginSchema, updateProfileSchema, changePasswordSchema } from "#schemas/user.schema";
 import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
 
@@ -123,6 +123,16 @@ export class UserController {
       success: true,
       user: UserDto.transform(user),
       message: "Profil mis à jour avec succès",
+    });
+  }
+
+  static async changePassword(req, res) {
+    const { oldPassword, newPassword } = validateData(changePasswordSchema, req.body);
+    await UserService.updatePassword(req.user.userId, oldPassword, newPassword);
+
+    res.json({
+      success: true,
+      message: "Mot de passe modifié avec succès",
     });
   }
 }

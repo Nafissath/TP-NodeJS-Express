@@ -74,5 +74,23 @@ export class UserService {
       data: data,
     });
   }
-}
+
+  static async updatePassword(userId, oldPassword, newPassword) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.password) {
+      throw new ConflictException("Impossible de modifier le mot de passe (compte OAuth ?)");
+    }
+
+    const isValid = await verifyPassword(user.password, oldPassword);
+    if (!isValid) {
+      throw new UnauthorizedException("Ancien mot de passe incorrect");
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+  }
 }
