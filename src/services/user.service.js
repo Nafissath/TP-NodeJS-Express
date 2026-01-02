@@ -93,4 +93,11 @@ export class UserService {
       data: { password: hashedPassword },
     });
   }
+
+  static async softDelete(userId) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { disabledAt: new Date() },
+    });
+  }
 }

@@ -135,4 +135,12 @@ export class UserController {
       message: "Mot de passe modifié avec succès",
     });
   }
+
+  static async deleteMe(req, res) {
+    await UserService.softDelete(req.user.userId);
+    res.json({
+      success: true,
+      message: "Votre compte a été désactivé avec succès",
+    });
+  }
 }
