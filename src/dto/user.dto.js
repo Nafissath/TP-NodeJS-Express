@@ -2,12 +2,14 @@ export class UserDto {
   constructor(user) {
     this.id = user.id;
     this.email = user.email;
-    this.name = user.name;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
     this.createdAt = user.createdAt;
   }
 
   // Cette méthode permet de transformer soit un utilisateur, soit une liste d'utilisateurs
   static transform(data) {
+    if (!data) return null;
     if (Array.isArray(data)) {
       return data.map((user) => new UserDto(user));
     }
