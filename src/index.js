@@ -9,6 +9,8 @@ import { logger, httpLogger } from "#lib/logger";
 import { errorHandler } from "#middlewares/error-handler";
 import { notFoundHandler } from "#middlewares/not-found";
 import userRouter from "#routes/user.routes";
+import authRouter from "#routes/auth.routes";
+import { config } from "#config/env";
 
 const app = express();
 const PORT = config.PORT || 3000;

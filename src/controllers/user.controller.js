@@ -40,14 +40,14 @@ export class UserController {
     );
 
     // Historique de connexion
-      await prisma.loginHistory.create({
-        data: {
-          userId: user.id,
-          ipAddress: req.ip || "127.0.0.1",
-          userAgent: req.headers["user-agent"] || "unknown",
-          success: true
-        }
-      });
+    await prisma.loginHistory.create({
+      data: {
+        userId: user.id,
+        ipAddress: req.ip || "127.0.0.1",
+        userAgent: req.headers["user-agent"] || "unknown",
+        success: true
+      }
+    });
 
     res.json({
       success: true,
@@ -61,8 +61,14 @@ export class UserController {
 
   // Blacklist l'accessToken actuel
   static async logout(req, res) {
-    const token = req.headers.authorization.split(" ")[1];
-    const { refreshToken } = req.body;
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader) {
+    return res.status(204).end(); 
+  }
+
+  const token = authHeader.split(" ")[1];
+  const { refreshToken } = req.body;
 
     // 1. Blacklister l'access token 
     await prisma.blacklistedAccessToken.create({
@@ -84,7 +90,7 @@ export class UserController {
     res.json({ success: true, message: "Déconnexion réussie" });
   }
 
-  
+
   static async getAll(req, res) {
     const users = await UserService.findAll();
     res.json({
