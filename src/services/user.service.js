@@ -1,6 +1,7 @@
 import prisma from "#lib/prisma";
 import { hashPassword, verifyPassword } from "#lib/password";
 import { ConflictException, UnauthorizedException, NotFoundException } from "#lib/exceptions";
+import EmailService from "#services/email.service";
 
 export class UserService {
   static async register(data) {
@@ -92,6 +93,9 @@ export class UserService {
       where: { id: userId },
       data: { password: hashedPassword },
     });
+
+    // Notification de changement de mot de passe
+    EmailService.sendPasswordChangeAlert(user.email);
   }
 
   static async softDelete(userId) {
