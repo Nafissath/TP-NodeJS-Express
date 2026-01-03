@@ -5,16 +5,26 @@ import { registerSchema, loginSchema, updateProfileSchema, changePasswordSchema 
 import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
 import EmailService from "#services/email.service";
+import { TokenService } from "#services/token.service";
 
 export class UserController {
   static async register(req, res) {
     const validatedData = validateData(registerSchema, req.body);
     const user = await UserService.register(validatedData);
 
+    // Envoyer l'email de vérification après l'inscription
+    try {
+      const token = await TokenService.generateVerificationToken(user.email);
+      await EmailService.sendVerificationEmail(user.email, token);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email de vérification:", error);
+      // On continue même si l'email échoue
+    }
+
     res.status(201).json({
       success: true,
       user: UserDto.transform(user),
-      message: "Compte créé. Veuillez vous connecter.",
+      message: "Compte créé. Un email de vérification a été envoyé à votre adresse.",
     });
   }
 
@@ -24,6 +34,15 @@ export class UserController {
 
     try {
       const user = await UserService.login(email, password);
+
+      // Vérifier si l'email est vérifié
+      if (!user.emailVerified) {
+        return res.status(403).json({
+          success: false,
+          message: "Veuillez vérifier votre email avant de vous connecter",
+          code: "EMAIL_NOT_VERIFIED"
+        });
+      }
 
       const accessToken = await signAccessToken({ userId: user.id });
       const refreshToken = await signRefreshToken({ userId: user.id });
