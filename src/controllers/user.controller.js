@@ -22,47 +22,62 @@ export class UserController {
     const validatedData = validateData(loginSchema, req.body);
     const { email, password } = validatedData;
 
-    const user = await UserService.login(email, password);
+    try {
+      const user = await UserService.login(email, password);
 
-    const accessToken = await signAccessToken({ userId: user.id });
-    const refreshToken = await signRefreshToken({ userId: user.id });
+      const accessToken = await signAccessToken({ userId: user.id });
+      const refreshToken = await signRefreshToken({ userId: user.id });
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7);
 
+      // Permet la gestion des sessions(Whitelist)
+      await UserService.createRefreshToken(
+        user.id,
+        refreshToken,
+        expiresAt,
+        req.ip,
+        req.headers["user-agent"]
+      );
 
-    // Permet la gestion des sessions(Whitelist)
-    await UserService.createRefreshToken(
-      user.id,
-      refreshToken,
-      expiresAt,
-      req.ip,
-      req.headers["user-agent"]
-    );
+      // Historique de connexion (Succès)
+      await prisma.loginHistory.create({
+        data: {
+          userId: user.id,
+          ipAddress: req.ip || "127.0.0.1",
+          userAgent: req.headers["user-agent"] || "unknown",
+          success: true
+        }
+      });
 
-    // Historique de connexion
-    await prisma.loginHistory.create({
-      data: {
-        userId: user.id,
-        ipAddress: req.ip || "127.0.0.1",
+      res.json({
+        success: true,
+        accessToken,
+        refreshToken,
+        user: UserDto.transform(user),
+      });
+
+      // Notification de connexion
+      EmailService.sendNewLoginAlert(user.email, {
+        ip: req.ip || "127.0.0.1",
         userAgent: req.headers["user-agent"] || "unknown",
-        success: true
+        date: new Date().toLocaleString(),
+      });
+    } catch (error) {
+      // Si l'utilisateur existe mais le MDP est faux, on log l'échec
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (user) {
+        await prisma.loginHistory.create({
+          data: {
+            userId: user.id,
+            ipAddress: req.ip || "127.0.0.1",
+            userAgent: req.headers["user-agent"] || "unknown",
+            success: false
+          }
+        });
       }
-    });
-
-    res.json({
-      success: true,
-      accessToken,
-      refreshToken,
-      user: UserDto.transform(user),
-    });
-
-    // Notification de connexion
-    EmailService.sendNewLoginAlert(user.email, {
-      ip: req.ip || "127.0.0.1",
-      userAgent: req.headers["user-agent"] || "unknown",
-      date: new Date().toLocaleString(),
-    });
+      throw error; // On laisse le gestionnaire d'erreurs global répondre 401
+    }
   }
 
 
