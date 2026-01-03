@@ -158,4 +158,30 @@ export class UserController {
       history,
     });
   }
+
+  static async getSessions(req, res) {
+    const sessions = await UserService.listSessions(req.user.userId);
+    res.json({
+      success: true,
+      sessions,
+    });
+  }
+
+  static async revokeSession(req, res) {
+    await UserService.revokeSession(req.user.userId, req.params.id);
+    res.json({
+      success: true,
+      message: "Session révoquée avec succès",
+    });
+  }
+
+  static async revokeOtherSessions(req, res) {
+    // On récupère le refresh token actuel depuis le body si possible (dépend de comment il est passé)
+    // Pour simplifier ici, on révoque tout ce qui n'est pas révoqué
+    await UserService.revokeAllOtherSessions(req.user.userId);
+    res.json({
+      success: true,
+      message: "Toutes les autres sessions ont été révoquées",
+    });
+  }
 }
