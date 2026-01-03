@@ -11,8 +11,10 @@ import { notFoundHandler } from "#middlewares/not-found";
 import userRouter from "#routes/user.routes";
 import authRouter from "#routes/auth.routes";
 import { config } from "#config/env";
+import { globalLimiter } from "#middlewares/rate-limit";
 
 const app = express();
+app.use(globalLimiter);
 const PORT = config.PORT || 3000;
 
 // Middlewares
