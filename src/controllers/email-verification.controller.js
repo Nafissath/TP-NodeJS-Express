@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '#lib/prisma';
 import { tokenService } from '#services/token.service';
 import emailService from '#services/email.service';
 import { asyncHandler } from '#lib/async-handler';
 import { logger } from '#lib/logger';
-
-const prisma = new PrismaClient();
 
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;

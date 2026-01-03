@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 
 // Utilisation des routes
 app.use("/users", userRouter);
-app.use("/", authRouter); // Pour garder /register et /login à la racine
+app.use("/api/auth", authRouter); // Routes unifiées avec préfixe /api/auth pour les autres endpoints
 
 // 404 handler
 app.use(notFoundHandler);

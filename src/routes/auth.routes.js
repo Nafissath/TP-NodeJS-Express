@@ -7,22 +7,17 @@ import { auth } from "#middlewares/auth";
 
 const router = Router();
 
-// Inscription et Connexion
+// Routes Personne 1 (existantes)
 router.post("/register", authLimiter, asyncHandler(UserController.register));
 router.post("/login", authLimiter, asyncHandler(UserController.login));
-
-// Déconnexion 
 router.post("/logout", auth, asyncHandler(UserController.logout));
 
-// Vérification Email
-router.post("/verify-email/:token", authLimiter, asyncHandler(verifyEmail));
-router.post("/resend-verification", authLimiter, asyncHandler(resendVerification));
-
-// Mot de passe oublié
-router.post("/forgot-password", authLimiter, asyncHandler(forgotPassword));
-router.post("/reset-password/:token", authLimiter, asyncHandler(resetPassword));
-
-// Nettoyage tokens (admin ou cron)
-router.post("/cleanup-tokens", asyncHandler(cleanupTokens));
+// Routes Personne 2 - Vérification Email & Tokens
+// Toutes les routes ont le préfixe /api/auth/ pour éviter les conflits
+router.post("/api/auth/resend-verification", authLimiter, asyncHandler(resendVerification));
+router.post("/api/auth/verify-email/:token", authLimiter, asyncHandler(verifyEmail));
+router.post("/api/auth/forgot-password", authLimiter, asyncHandler(forgotPassword));
+router.post("/api/auth/reset-password/:token", authLimiter, asyncHandler(resetPassword));
+router.post("/api/auth/cleanup-tokens", authLimiter, asyncHandler(cleanupTokens));
 
 export default router;

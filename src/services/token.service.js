@@ -1,8 +1,6 @@
 import { randomBytes } from 'crypto';
-import { PrismaClient } from '@prisma/client';
+import prisma from '#lib/prisma';
 import { logger } from '#lib/logger';
-
-const prisma = new PrismaClient();
 
 class TokenService {
   generateToken() {
