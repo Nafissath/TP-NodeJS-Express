@@ -12,7 +12,14 @@ Ce projet est une API de gestion d'utilisateurs robuste construite avec Express,
 ### 🔒 Sécurité & Authentification
 - **Changement de MDP** : `POST /api/users/change-password`
 - **Historique** : `GET /api/users/login-history` (Suivi des IP/Appareils)
-- **Notifications** : Alertes email automatiques via Nodemailer (Nouvelle connexion, changement de MDP)
+- **Protection Brute-Force** : Limitation des tentatives via `express-rate-limit`
+- **Gestion des Sessions** : Listing et révocation des tokens actifs
+- **Notifications** : Alertes email (Mailtrap) pour les actions sensibles (Login, Changement MDP)
+- **Conformité Specs** : Soft delete (`disabledAt`), logs d'échecs, vérification Blacklist.
+
+### 📧 Intégration Équipe (Personne 2)
+- **Vérification Email** : Intégration du flux de validation par token.
+- **Service Email Unifié** : Utilisation d'un `EmailService` commun configuré pour Mailtrap.
 
 ## Installation
 
@@ -28,17 +35,20 @@ Ce projet est une API de gestion d'utilisateurs robuste construite avec Express,
    ```
 
 3. **Configuration (.env)**
-   Créez un fichier `.env` à la racine :
+   Créez un fichier `.env` à partir de l'exemple :
    ```env
    PORT=3000
    DATABASE_URL="file:./dev.db"
    JWT_SECRET="votre_secret_super_secure"
-   
-   # Optionnel : Email (Nodemailer)
-   SMTP_HOST=smtp.ethereal.email
+   NODE_ENV=development
+
+   # Mailtrap / SMTP (Indispensable pour tests)
+   SMTP_HOST=sandbox.smtp.mailtrap.io
    SMTP_PORT=587
-   SMTP_USER=votre_utilisateur
-   SMTP_PASS=votre_mot_de passe
+   SMTP_USER=votre_user
+   SMTP_PASS=votre_pass
+   SMTP_FROM=no-reply@votre-app.com
+   APP_NAME="TP NodeJS Express"
    ```
 
 4. **Base de données**
@@ -63,7 +73,10 @@ Tous ces endpoints nécessitent un header `Authorization: Bearer <token>`.
 | PATCH | `/api/users/me` | Met à jour le profil (firstName, lastName, email) |
 | DELETE | `/api/users/me` | Désactive le compte (Soft Delete) |
 | POST | `/api/users/change-password` | Change le mot de passe (oldPassword + newPassword) |
-| GET | `/api/users/login-history` | Liste l'historique des connexions |
+| GET | `/api/users/login-history` | Liste l'historique des connexions (succès/échecs) |
+| GET | `/api/users/sessions` | Liste les sessions actives (appareils connectés) |
+| DELETE | `/api/users/sessions/:id` | Révoque une session spécifique |
+| DELETE | `/api/users/sessions` | Révoque toutes les autres sessions |
 
 ## Tests
 Une collection Postman est disponible dans le dossier `/docs` (ou via le fichier JSON à la racine).
