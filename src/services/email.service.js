@@ -6,29 +6,31 @@ const logger = pino();
 
 class EmailService {
     constructor() {
-        // Configuration pour le développement (Ethereal ou console)
-        // En production, on utiliserait les vraies variables d'environnement
+        // Configuration avec les variables d'environnement
         this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || "smtp.ethereal.email",
-            port: process.env.SMTP_PORT || 587,
+            host: config.SMTP_HOST || "smtp.ethereal.email",
+            port: config.SMTP_PORT || 587,
+            secure: config.SMTP_SECURE || false,
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
+                user: config.SMTP_USER,
+                pass: config.SMTP_PASS,
             },
         });
+        
+        logger.info(`Email service configuré avec: ${config.SMTP_HOST}:${config.SMTP_PORT}`);
     }
 
     async sendEmail({ to, subject, html }) {
         try {
             // Si pas de config SMTP, on log juste dans la console
-            if (!process.env.SMTP_USER) {
+            if (!config.SMTP_USER) {
                 logger.info(`[EMAIL MOCK] To: ${to} | Subject: ${subject}`);
                 logger.info(`[EMAIL CONTENT]: ${html}`);
                 return { messageId: "mock-id" };
             }
 
             const info = await this.transporter.sendMail({
-                from: '"Security TP" <security@example.com>',
+                from: `"${config.APP_NAME}" <${config.SMTP_FROM || 'no-reply@example.com'}>`,
                 to,
                 subject,
                 html,
@@ -38,7 +40,7 @@ class EmailService {
             return info;
         } catch (error) {
             logger.error(`Error sending email: ${error.message}`);
-            // On ne bloque pas le flux principal si l'email échoue
+            throw error; // On propage l'erreur pour voir ce qui se passe
         }
     }
 
@@ -72,7 +74,7 @@ class EmailService {
     }
 
     async sendVerificationEmail(email, token) {
-        const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email/${token}`;
+        const verificationUrl = `${config.FRONTEND_URL || 'http://localhost:3000'}/verify-email/${token}`;
         
         await this.sendEmail({
             to: email,
@@ -90,7 +92,7 @@ class EmailService {
     }
 
     async sendPasswordResetEmail(email, token) {
-        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
+        const resetUrl = `${config.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
         
         await this.sendEmail({
             to: email,

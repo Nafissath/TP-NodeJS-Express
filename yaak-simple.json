@@ -380,6 +380,144 @@
         "description": "Nettoie tous les tokens expirés de la base de données",
         "headers": [],
         "sortPriority": -60.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_register_user1",
+        "name": "Register - Alice Martin",
+        "method": "POST",
+        "url": "http://localhost:3000/register",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_xxd8ZkP6wT",
+        "body": {
+          "text": "{\n  \"email\": \"alice.martin@example.com\",\n  \"password\": \"AlicePassword123!\",\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Martin\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Créer un compte pour Alice Martin - Test email verification workflow",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_alice"
+          }
+        ],
+        "sortPriority": -50.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_register_user2",
+        "name": "Register - Bob Wilson",
+        "method": "POST",
+        "url": "http://localhost:3000/register",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_xxd8ZkP6wT",
+        "body": {
+          "text": "{\n  \"email\": \"bob.wilson@example.com\",\n  \"password\": \"BobPassword123!\",\n  \"firstName\": \"Bob\",\n  \"lastName\": \"Wilson\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Créer un compte pour Bob Wilson - Test email verification workflow",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_bob"
+          }
+        ],
+        "sortPriority": -45.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_register_user3",
+        "name": "Register - Claire Dubois",
+        "method": "POST",
+        "url": "http://localhost:3000/register",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_xxd8ZkP6wT",
+        "body": {
+          "text": "{\n  \"email\": \"claire.dubois@example.com\",\n  \"password\": \"ClairePassword123!\",\n  \"firstName\": \"Claire\",\n  \"lastName\": \"Dubois\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Créer un compte pour Claire Dubois - Test email verification workflow",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_claire"
+          }
+        ],
+        "sortPriority": -40.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_login_alice",
+        "name": "Login - Alice Martin",
+        "method": "POST",
+        "url": "http://localhost:3000/login",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_xxd8ZkP6wT",
+        "body": {
+          "text": "{\n  \"email\": \"alice.martin@example.com\",\n  \"password\": \"AlicePassword123!\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Tenter de se connecter avec Alice - Devrait échouer (email non vérifié)",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_login_alice"
+          }
+        ],
+        "sortPriority": -35.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_resend_alice",
+        "name": "Resend Verification - Alice",
+        "method": "POST",
+        "url": "http://localhost:3000/api/auth/resend-verification",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_personne2_simple",
+        "body": {
+          "text": "{\n  \"email\": \"alice.martin@example.com\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Renvoyer l'email de vérification pour Alice",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_resend_alice"
+          }
+        ],
+        "sortPriority": -30.0
+      },
+      {
+        "model": "http_request",
+        "id": "rq_forgot_bob",
+        "name": "Forgot Password - Bob Wilson",
+        "method": "POST",
+        "url": "http://localhost:3000/api/auth/forgot-password",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_personne2_simple",
+        "body": {
+          "text": "{\n  \"email\": \"bob.wilson@example.com\"\n}"
+        },
+        "bodyType": "application/json",
+        "description": "Demander une réinitialisation de mot de passe pour Bob",
+        "headers": [
+          {
+            "enabled": true,
+            "name": "Content-Type",
+            "value": "application/json",
+            "id": "hdr_content_type_forgot_bob"
+          }
+        ],
+        "sortPriority": -25.0
       }
     ],
     "grpcRequests": [],

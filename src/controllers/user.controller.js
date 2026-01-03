@@ -5,7 +5,7 @@ import { registerSchema, loginSchema, updateProfileSchema, changePasswordSchema 
 import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
 import EmailService from "#services/email.service";
-import { TokenService } from "#services/token.service";
+import { tokenService } from "#services/token.service";
 
 export class UserController {
   static async register(req, res) {
@@ -14,8 +14,8 @@ export class UserController {
 
     // Envoyer l'email de vérification après l'inscription
     try {
-      const token = await TokenService.generateVerificationToken(user.email);
-      await EmailService.sendVerificationEmail(user.email, token);
+      const token = await tokenService.createVerificationToken(user.id);
+      await EmailService.sendVerificationEmail(user.email, token.token);
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'email de vérification:", error);
       // On continue même si l'email échoue
