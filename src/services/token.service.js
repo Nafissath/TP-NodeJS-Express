@@ -1,0 +1,171 @@
+import { randomBytes } from 'crypto';
+import { PrismaClient } from '@prisma/client';
+import { logger } from '#lib/logger';
+
+const prisma = new PrismaClient();
+
+class TokenService {
+  generateToken() {
+    return randomBytes(32).toString('hex');
+  }
+
+  async createVerificationToken(userId) {
+    const token = this.generateToken();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 heures
+
+    try {
+      // Supprimer les anciens tokens de vérification pour cet utilisateur
+      await prisma.verificationToken.deleteMany({
+        where: { userId }
+      });
+
+      const verificationToken = await prisma.verificationToken.create({
+        data: {
+          token,
+          userId,
+          expiresAt
+        }
+      });
+
+      logger.info(`Token de vérification créé pour l'utilisateur ${userId}`);
+      return verificationToken;
+    } catch (error) {
+      logger.error('Erreur création token de vérification:', error);
+      throw new Error('Impossible de créer le token de vérification');
+    }
+  }
+
+  async createPasswordResetToken(userId) {
+    const token = this.generateToken();
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
+
+    try {
+      // Supprimer les anciens tokens de réinitialisation pour cet utilisateur
+      await prisma.passwordResetToken.deleteMany({
+        where: { userId }
+      });
+
+      const resetToken = await prisma.passwordResetToken.create({
+        data: {
+          token,
+          userId,
+          expiresAt
+        }
+      });
+
+      logger.info(`Token de réinitialisation créé pour l'utilisateur ${userId}`);
+      return resetToken;
+    } catch (error) {
+      logger.error('Erreur création token de réinitialisation:', error);
+      throw new Error('Impossible de créer le token de réinitialisation');
+    }
+  }
+
+  async verifyEmailToken(token) {
+    try {
+      const verificationToken = await prisma.verificationToken.findUnique({
+        where: { token },
+        include: { user: true }
+      });
+
+      if (!verificationToken) {
+        throw new Error('Token invalide');
+      }
+
+      if (verificationToken.expiresAt < new Date()) {
+        await prisma.verificationToken.delete({
+          where: { id: verificationToken.id }
+        });
+        throw new Error('Token expiré');
+      }
+
+      return verificationToken;
+    } catch (error) {
+      logger.error('Erreur vérification token email:', error);
+      throw error;
+    }
+  }
+
+  async verifyPasswordResetToken(token) {
+    try {
+      const resetToken = await prisma.passwordResetToken.findUnique({
+        where: { token },
+        include: { user: true }
+      });
+
+      if (!resetToken) {
+        throw new Error('Token invalide');
+      }
+
+      if (resetToken.expiresAt < new Date()) {
+        await prisma.passwordResetToken.delete({
+          where: { id: resetToken.id }
+        });
+        throw new Error('Token expiré');
+      }
+
+      return resetToken;
+    } catch (error) {
+      logger.error('Erreur vérification token de réinitialisation:', error);
+      throw error;
+    }
+  }
+
+  async consumeVerificationToken(tokenId) {
+    try {
+      await prisma.verificationToken.delete({
+        where: { id: tokenId }
+      });
+      logger.info(`Token de vérification consommé: ${tokenId}`);
+    } catch (error) {
+      logger.error('Erreur consommation token de vérification:', error);
+      throw new Error('Impossible de consommer le token de vérification');
+    }
+  }
+
+  async consumePasswordResetToken(tokenId) {
+    try {
+      await prisma.passwordResetToken.delete({
+        where: { id: tokenId }
+      });
+      logger.info(`Token de réinitialisation consommé: ${tokenId}`);
+    } catch (error) {
+      logger.error('Erreur consommation token de réinitialisation:', error);
+      throw new Error('Impossible de consommer le token de réinitialisation');
+    }
+  }
+
+  async cleanupExpiredTokens() {
+    try {
+      const now = new Date();
+      
+      const deletedVerificationTokens = await prisma.verificationToken.deleteMany({
+        where: {
+          expiresAt: {
+            lt: now
+          }
+        }
+      });
+
+      const deletedResetTokens = await prisma.passwordResetToken.deleteMany({
+        where: {
+          expiresAt: {
+            lt: now
+          }
+        }
+      });
+
+      logger.info(`Nettoyage tokens: ${deletedVerificationTokens.count} tokens de vérification supprimés, ${deletedResetTokens.count} tokens de réinitialisation supprimés`);
+      
+      return {
+        verificationTokensDeleted: deletedVerificationTokens.count,
+        resetTokensDeleted: deletedResetTokens.count
+      };
+    } catch (error) {
+      logger.error('Erreur nettoyage tokens expirés:', error);
+      throw new Error('Impossible de nettoyer les tokens expirés');
+    }
+  }
+}
+
+export const tokenService = new TokenService();
