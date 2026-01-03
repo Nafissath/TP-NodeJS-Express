@@ -4,6 +4,7 @@ import { signAccessToken, signRefreshToken } from "#lib/jwt";
 import { registerSchema, loginSchema, updateProfileSchema, changePasswordSchema } from "#schemas/user.schema";
 import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
+import EmailService from "#services/email.service";
 
 export class UserController {
   static async register(req, res) {
@@ -54,7 +55,13 @@ export class UserController {
       accessToken,
       refreshToken,
       user: UserDto.transform(user),
+    });
 
+    // Notification de connexion
+    EmailService.sendNewLoginAlert(user.email, {
+      ip: req.ip || "127.0.0.1",
+      userAgent: req.headers["user-agent"] || "unknown",
+      date: new Date().toLocaleString(),
     });
   }
 
@@ -70,7 +77,7 @@ export class UserController {
     const token = authHeader.split(" ")[1];
     const { refreshToken } = req.body;
 
-    // 1. Blacklister l'access token 
+    // 1. Blacklister l'access token
     await prisma.blacklistedAccessToken.create({
       data: {
         token: token,
