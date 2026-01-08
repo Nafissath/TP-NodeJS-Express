@@ -11,8 +11,10 @@ import { notFoundHandler } from "#middlewares/not-found";
 import userRouter from "#routes/user.routes";
 import authRouter from "#routes/auth.routes";
 import { config } from "#config/env";
+import { globalLimiter } from "#middlewares/rate-limit";
 
 const app = express();
+app.use(globalLimiter);
 const PORT = config.PORT || 3000;
 
 // Middlewares
@@ -28,7 +30,8 @@ app.get("/", (req, res) => {
 
 // Utilisation des routes
 app.use("/users", userRouter);
-app.use("/", authRouter); // Pour garder /register et /login à la racine
+app.use("/api/auth", authRouter); // Routes authentifiées
+app.use("/", authRouter); // Routes register/login à la racine
 
 // 404 handler
 app.use(notFoundHandler);
