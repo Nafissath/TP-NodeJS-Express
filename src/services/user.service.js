@@ -49,11 +49,38 @@ export class UserService {
   }
 
   static async findAll() {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        emailVerifiedAt: true,
+        twoFactorEnabledAt: true,
+        disabledAt: true,
+        createdAt: true,
+        updatedAt: true,
+        // password et twoFactorSecret sont EXCLUS
+      }
+    });
   }
 
   static async findById(id) {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        emailVerifiedAt: true,
+        twoFactorEnabledAt: true,
+        disabledAt: true,
+        createdAt: true,
+        updatedAt: true,
+        // password et twoFactorSecret sont EXCLUS
+      }
+    });
 
     if (!user) {
       throw new NotFoundException("Utilisateur non trouvé");
@@ -64,7 +91,10 @@ export class UserService {
 
   static async update(userId, data) {
     if (data.email) {
-      const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
+      const existingUser = await prisma.user.findUnique({
+        where: { email: data.email },
+        select: { id: true } // On a juste besoin de l'ID pour la vérification
+      });
       if (existingUser && existingUser.id !== userId) {
         throw new ConflictException("Cet email est déjà utilisé");
       }
@@ -73,6 +103,18 @@ export class UserService {
     return prisma.user.update({
       where: { id: userId },
       data: data,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        emailVerifiedAt: true,
+        twoFactorEnabledAt: true,
+        disabledAt: true,
+        createdAt: true,
+        updatedAt: true,
+        // password et twoFactorSecret sont EXCLUS
+      }
     });
   }
 
