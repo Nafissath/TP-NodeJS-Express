@@ -30,28 +30,30 @@ export class UserController {
   }
 
   static async login(req, res, next) {
-    try {
-      const validatedData = validateData(loginSchema, req.body);
-      const { email, password } = validatedData;
+  try {
+    const validatedData = validateData(loginSchema, req.body);
+    const { email, password } = validatedData;
 
-      const user = await UserService.login(email, password);
-      
-      const accessToken = await signAccessToken({ userId: user.id });
-      const refreshToken = await signRefreshToken({ userId: user.id });
+    const user = await UserService.login(email, password);
+    
+    const accessToken = await signAccessToken({ userId: user.id });
+    const refreshToken = await signRefreshToken({ userId: user.id });
 
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7); // Expire dans 7 jours
 
-      await UserService.createRefreshToken(user.id, refreshToken, expiresAt, req.ip, req.headers["user-agent"]);
+    await UserService.createRefreshToken(user.id, refreshToken, expiresAt, req.ip, req.headers["user-agent"]);
 
-      res.json({
-        success: true,
-        user: UserDto.transform(user),
-        accessToken,
-        refreshToken,
-      });
-    } catch (error) {
-      next(error);
-    }
+    res.json({
+      success: true,
+      user: UserDto.transform(user),
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    next(error);
   }
+}
 
   static async logout(req, res, next) {
     try {
