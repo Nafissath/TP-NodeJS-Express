@@ -1,5 +1,5 @@
 import { UnauthorizedException } from "#lib/exceptions";
-import { verifyToken } from "#lib/jwt";
+import { verifyAccessToken } from "#lib/jwt";
 import { logger } from "#lib/logger";
 import prisma from "#lib/prisma";
 

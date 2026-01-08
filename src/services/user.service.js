@@ -3,14 +3,25 @@ import { hashPassword, verifyPassword } from "#lib/password";
 import { ConflictException, UnauthorizedException, NotFoundException } from "#lib/exceptions";
 import EmailService from "#services/email.service";
 
+// ✅ Sécurité (Personne 5): Configuration des champs à retourner (Exclusion MDP)
+const USER_SELECT_FIELDS = {
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  emailVerifiedAt: true,
+  twoFactorEnabledAt: true,
+  disabledAt: true,
+  createdAt: true,
+  updatedAt: true
+};
+
 export class UserService {
+  // Inscription
   static async register(data) {
     const { email, password, firstName, lastName } = data;
-
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      throw new ConflictException("Email déjà utilisé");
-    }
+    if (existingUser) throw new ConflictException("Email déjà utilisé");
 
     const hashedPassword = await hashPassword(password);
 
@@ -24,68 +35,32 @@ export class UserService {
     });
   }
 
+  // Connexion
   static async login(email, password) {
     const user = await prisma.user.findUnique({ where: { email } });
-
     if (!user || !user.password || !(await verifyPassword(user.password, password))) {
       throw new UnauthorizedException("Identifiants invalides");
     }
-
     return user;
   }
 
-
-  // Whitelist des Refresh Tokens 
+  // GESTION DES SESSIONS (Whitelist)
   static async createRefreshToken(userId, token, expiresAt, ipAddress, userAgent) {
     return await prisma.refreshToken.create({
-      data: {
-        token,
-        userId,
-        expiresAt,
-        ipAddress,
-        userAgent
-      }
+      data: { userId, token, expiresAt, ipAddress, userAgent }
     });
   }
 
   static async findAll() {
-    return prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        emailVerifiedAt: true,
-        twoFactorEnabledAt: true,
-        disabledAt: true,
-        createdAt: true,
-        updatedAt: true,
-        // password et twoFactorSecret sont EXCLUS
-      }
-    });
+    return prisma.user.findMany({ select: USER_SELECT_FIELDS });
   }
 
   static async findById(id) {
     const user = await prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        emailVerifiedAt: true,
-        twoFactorEnabledAt: true,
-        disabledAt: true,
-        createdAt: true,
-        updatedAt: true,
-        // password et twoFactorSecret sont EXCLUS
-      }
+      select: USER_SELECT_FIELDS
     });
-
-    if (!user) {
-      throw new NotFoundException("Utilisateur non trouvé");
-    }
-
+    if (!user) throw new NotFoundException("Utilisateur non trouvé");
     return user;
   }
 
@@ -93,7 +68,7 @@ export class UserService {
     if (data.email) {
       const existingUser = await prisma.user.findUnique({
         where: { email: data.email },
-        select: { id: true } // On a juste besoin de l'ID pour la vérification
+        select: { id: true }
       });
       if (existingUser && existingUser.id !== userId) {
         throw new ConflictException("Cet email est déjà utilisé");
@@ -103,18 +78,7 @@ export class UserService {
     return prisma.user.update({
       where: { id: userId },
       data: data,
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        emailVerifiedAt: true,
-        twoFactorEnabledAt: true,
-        disabledAt: true,
-        createdAt: true,
-        updatedAt: true,
-        // password et twoFactorSecret sont EXCLUS
-      }
+      select: USER_SELECT_FIELDS
     });
   }
 
@@ -140,7 +104,6 @@ export class UserService {
     EmailService.sendPasswordChangeAlert(user.email);
 
     // ✅ CRITIQUE (Personne 5): Invalidation des sessions au changement de MDP
-    // Sécurité: Révoquer toutes les autres sessions lors d'un changement de MDP
     await this.revokeAllOtherSessions(userId);
   }
 
@@ -180,7 +143,6 @@ export class UserService {
   }
 
   static async revokeSession(userId, tokenId) {
-    // On ne supprime pas forcément, on peut juste révoquer (soft-revoke)
     return prisma.refreshToken.updateMany({
       where: { id: tokenId, userId },
       data: { revokedAt: new Date() }
