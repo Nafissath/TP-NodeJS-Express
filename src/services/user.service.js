@@ -139,6 +139,7 @@ export class UserService {
     // Notification de changement de mot de passe
     EmailService.sendPasswordChangeAlert(user.email);
 
+    // ✅ CRITIQUE (Personne 5): Invalidation des sessions au changement de MDP
     // Sécurité: Révoquer toutes les autres sessions lors d'un changement de MDP
     await this.revokeAllOtherSessions(userId);
   }
