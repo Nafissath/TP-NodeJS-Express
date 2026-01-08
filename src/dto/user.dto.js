@@ -4,7 +4,11 @@ export class UserDto {
     this.email = user.email;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+    this.emailVerifiedAt = user.emailVerifiedAt;
+    this.twoFactorEnabledAt = user.twoFactorEnabledAt;
     this.createdAt = user.createdAt;
+    this.updatedAt = user.updatedAt;
+    // password, twoFactorSecret, disabledAt sont EXCLUS pour la sécurité
   }
 
   // Cette méthode permet de transformer soit un utilisateur, soit une liste d'utilisateurs
