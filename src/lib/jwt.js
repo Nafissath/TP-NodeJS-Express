@@ -21,10 +21,10 @@ export async function signRefreshToken(payload, expiresIn = "7d") {
     .sign(secret);
 }
 
-export  async function verifyToken(token) {
+export async function verifyToken(token) {
   try {
-  const { payload } = await jwtVerify(token, secret);
-  return payload;
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
   } catch (error) {
     return null;
   }
