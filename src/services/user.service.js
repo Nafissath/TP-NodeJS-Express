@@ -3,15 +3,17 @@ import { hashPassword, verifyPassword } from "#lib/password";
 import { ConflictException, UnauthorizedException, NotFoundException } from "#lib/exceptions";
 import EmailService from "#services/email.service";
 
-// Configuration des champs à retourner 
+// ✅ Sécurité (Personne 5): Configuration des champs à retourner (Exclusion MDP)
 const USER_SELECT_FIELDS = {
   id: true,
   email: true,
   firstName: true,
   lastName: true,
   emailVerifiedAt: true,
+  twoFactorEnabledAt: true,
   disabledAt: true,
-  createdAt: true
+  createdAt: true,
+  updatedAt: true
 };
 
 export class UserService {
@@ -39,7 +41,7 @@ export class UserService {
     if (!user || !user.password || !(await verifyPassword(user.password, password))) {
       throw new UnauthorizedException("Identifiants invalides");
     }
-    return user; // Retourne l'user complet pour le controller (besoin de l'ID)
+    return user;
   }
 
   // GESTION DES SESSIONS (Whitelist)
@@ -49,22 +51,6 @@ export class UserService {
     });
   }
 
-  static async findAll() {
-    return prisma.user.findMany();
-  }
-
-  static async revokeAllOtherSessions(userId, currentRefreshToken = null) {
-    return prisma.refreshToken.updateMany({
-      where: {
-        userId,
-        revokedAt: null,
-        ...(currentRefreshToken ? { NOT: { token: currentRefreshToken } } : {})
-      },
-      data: { revokedAt: new Date() }
-    });
-  }
-
-  // LECTURE
   static async findAll() {
     return prisma.user.findMany({ select: USER_SELECT_FIELDS });
   }
@@ -80,7 +66,10 @@ export class UserService {
 
   static async update(userId, data) {
     if (data.email) {
-      const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
+      const existingUser = await prisma.user.findUnique({
+        where: { email: data.email },
+        select: { id: true }
+      });
       if (existingUser && existingUser.id !== userId) {
         throw new ConflictException("Cet email est déjà utilisé");
       }
@@ -89,6 +78,7 @@ export class UserService {
     return prisma.user.update({
       where: { id: userId },
       data: data,
+      select: USER_SELECT_FIELDS
     });
   }
 
@@ -113,7 +103,7 @@ export class UserService {
     // Notification de changement de mot de passe
     EmailService.sendPasswordChangeAlert(user.email);
 
-    // Sécurité: Révoquer toutes les autres sessions lors d'un changement de MDP
+    // ✅ CRITIQUE (Personne 5): Invalidation des sessions au changement de MDP
     await this.revokeAllOtherSessions(userId);
   }
 
@@ -153,7 +143,6 @@ export class UserService {
   }
 
   static async revokeSession(userId, tokenId) {
-    // On ne supprime pas forcément, on peut juste révoquer (soft-revoke)
     return prisma.refreshToken.updateMany({
       where: { id: tokenId, userId },
       data: { revokedAt: new Date() }
