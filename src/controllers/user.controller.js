@@ -98,7 +98,9 @@ export class UserController {
       throw error; // On laisse le gestionnaire d'erreurs global répondre 401
     }
   }
+}
 
+      await UserService.createRefreshToken(user.id, refreshToken, expiresAt, req.ip, req.headers["user-agent"]);
 
   // Blacklist l'accessToken actuel
   static async logout(req, res) {
@@ -118,34 +120,29 @@ export class UserController {
         userId: req.user.userId,
         expiresAt: new Date(req.user.exp * 1000)
       }
-    });
-
-    // 2. Révoquer le refresh token
-    if (refreshToken) {
-      await prisma.refreshToken.updateMany({
-        where: { token: refreshToken, userId: req.user.userId },
-        data: { revokedAt: new Date() }
-      });
+      res.json({ success: true, message: "Déconnecté" });
+    } catch (error) {
+      next(error);
     }
-
-    res.json({ success: true, message: "Déconnexion réussie" });
   }
 
-
-  static async getAll(req, res) {
-    const users = await UserService.findAll();
-    res.json({
-      success: true,
-      users: users.map(user => UserDto.transform(user)),
-    });
+  static async getAll(req, res, next) {
+    try {
+      const users = await UserService.findAll();
+      res.json({ success: true, users: UserDto.transform(users) });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  static async getById(req, res) {
-    const user = await UserService.findById(req.params.id);
-    res.json({
-      success: true,
-      user: UserDto.transform(user),
-    });
+  static async getById(req, res, next) {
+    try {
+      // Suppression du parseInt car tes IDs sont des UUID (Strings)
+      const user = await UserService.findById(req.params.id);
+      res.json({ success: true, user: UserDto.transform(user) });
+    } catch (error) {
+      next(error);
+    }
   }
 
   static async getMe(req, res) {
