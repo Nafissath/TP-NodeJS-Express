@@ -6,6 +6,8 @@ export const config = {
   NODE_ENV: process.env.NODE_ENV,
   DATABASE_URL: process.env.DATABASE_URL,
   JWT_SECRET: process.env.JWT_SECRET,
+  // Secret séparé pour les tokens email (Personne 2)
+  EMAIL_TOKEN_SECRET: process.env.EMAIL_TOKEN_SECRET || process.env.JWT_SECRET,
   // Configuration Email
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_PORT: process.env.SMTP_PORT,
