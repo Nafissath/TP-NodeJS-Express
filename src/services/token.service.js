@@ -1,10 +1,32 @@
 import { randomBytes } from 'crypto';
 import prisma from '#lib/prisma';
 import { logger } from '#lib/logger';
+import { config } from '#config/env';
+import { createHash, hmac } from 'crypto';
 
 class TokenService {
   generateToken() {
     return randomBytes(32).toString('hex');
+  }
+
+  // Génère un token signé avec le secret séparé pour les emails
+  generateSecureToken(data) {
+    const timestamp = Date.now().toString();
+    const payload = `${data}:${timestamp}`;
+    const signature = hmac('sha256', config.EMAIL_TOKEN_SECRET, payload).toString('hex');
+    return `${payload}:${signature}`;
+  }
+
+  // Vérifie un token signé
+  verifySecureToken(token) {
+    const [data, timestamp, signature] = token.split(':');
+    const expectedSignature = hmac('sha256', config.EMAIL_TOKEN_SECRET, `${data}:${timestamp}`).toString('hex');
+    
+    if (signature !== expectedSignature) {
+      throw new Error('Token invalide - signature incorrecte');
+    }
+    
+    return { data, timestamp: parseInt(timestamp) };
   }
 
   async createVerificationToken(userId) {
