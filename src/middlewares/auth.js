@@ -13,7 +13,7 @@ export async function auth(req, res, next) {
 
     const token = bearerToken.split(" ")[1];
 
-    const payload = await verifyToken(token);
+    const payload = await verifyAccessToken(token);
 
     if (!payload) {
       throw new UnauthorizedException("Token expiré ou invalide");
