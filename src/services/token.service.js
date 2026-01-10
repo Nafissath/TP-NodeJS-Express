@@ -252,3 +252,6 @@ class TokenService {
 }
 
 export default TokenService;
+// Vérification dans token.service.js
+const tokenSize = Buffer.byteLength(token, 'utf8');
+console.log(tokenSize >= 1024 ? "✅ PASS" : "❌ FAIL");
