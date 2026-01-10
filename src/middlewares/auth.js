@@ -32,6 +32,18 @@ const authMiddleware = async (req, res, next) => {
         createdAt: true,
         updatedAt: true
       }
+
+    const token = bearerToken.split(" ")[1];
+
+    const payload = await verifyAccessToken(token);
+
+    if (!payload) {
+      throw new UnauthorizedException("Token expiré ou invalide");
+    }
+
+
+    const blacklisted = await prisma.blacklistedAccessToken.findUnique({
+      where: { token: token }
     });
     
     if (!user || user.disabledAt) {
