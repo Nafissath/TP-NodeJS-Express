@@ -80,3 +80,28 @@ Tous ces endpoints nécessitent un header `Authorization: Bearer <token>`.
 
 ## Tests
 Une collection Postman est disponible dans le dossier `/docs` (ou via le fichier JSON à la racine).
+
+# 🔐 Personne 3 : OAuth & Sessions
+
+## 📋 Responsabilités
+- ✅ **OAuth Authentication** (Google & GitHub)
+- ✅ **Refresh Token System** avec rotation
+- ✅ **Session Management**
+- ✅ **Tokens de 1024+ octets** (Exigence critique)
+
+## 🚀 Installation
+
+```bash
+# 1. Installer les dépendances
+npm install
+
+# 2. Configurer l'environnement
+cp .env.example .env
+# Éditer .env avec vos valeurs
+
+# 3. Initialiser la base de données
+npx prisma db push
+npx prisma generate
+
+# 4. Démarrer le serveur
+npm run dev
