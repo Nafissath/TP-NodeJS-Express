@@ -41,7 +41,7 @@ const refreshSecret = new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET)
 const alg = "HS256";
 
 // Fonction pour ajouter du "poids" au token (Règle : 1024 octets)
-const getPadding = () => "x".repeat(950); 
+const getPadding = () => "x".repeat(950);
 
 // Access Token
 export async function signAccessToken(payload, expiresIn = "15m") {
@@ -60,6 +60,7 @@ export async function signRefreshToken(payload, expiresIn = "7d") {
     .setExpirationTime(expiresIn)
     .sign(refreshSecret);
 }
+
 
 // Vérification (spécifie quel secret utiliser)
 export async function verifyAccessToken(token) {
