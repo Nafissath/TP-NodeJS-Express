@@ -5,6 +5,24 @@ import { config } from '#config/env';
 import { createHash, hmac } from 'crypto';
 
 class TokenService {
+  generateJWTs(user) {
+    // Règle Prof : Padding pour que le token dépasse 1024 octets
+    const padding = randomBytes(550).toString('hex');
+
+    const accessToken = jwt.sign(
+      { id: user.id, email: user.email, padding },
+      config.ACCESS_TOKEN_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      config.REFRESH_TOKEN_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return { accessToken, refreshToken };
+  }
   generateToken() {
     return randomBytes(32).toString('hex');
   }
