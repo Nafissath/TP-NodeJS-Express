@@ -1,11 +1,11 @@
 {
     "info": {
-        "name": "TP-NodeJS-Express - Personne 5",
+        "name": "TP-NodeJS-Express - MASTER COLLECTION (ALL PERSONNES)",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
         {
-            "name": "Authentification",
+            "name": "👤 Personne 1 - Authentification de Base",
             "item": [
                 {
                     "name": "Register (Inscription)",
@@ -14,7 +14,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"MdpSecurise123!\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\"\n}",
+                            "raw": "{\n    \"email\": \"test.user@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -22,16 +22,9 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/register",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "register"
-                            ]
+                            "raw": "{{base_url}}/register"
                         }
-                    },
-                    "response": []
+                    }
                 },
                 {
                     "name": "Login (Connexion)",
@@ -40,7 +33,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"MdpSecurise123!\"\n}",
+                            "raw": "{\n    \"email\": \"test.user@example.com\",\n    \"password\": \"SecurePass123!\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -48,49 +41,223 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/login",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "login"
-                            ]
+                            "raw": "{{base_url}}/login"
                         }
-                    },
-                    "response": []
+                    }
+                },
+                {
+                    "name": "Logout (Déconnexion)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/logout"
+                        }
+                    }
                 }
             ]
         },
         {
-            "name": "Profil",
+            "name": "📧 Personne 2 - Emails & Verification",
             "item": [
                 {
-                    "name": "Get Me (Mon Profil)",
+                    "name": "Resend Verification Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test.user@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/resend-verification"
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/verify-email/TOKEN_ICI"
+                        }
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test.user@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/forgot-password"
+                        }
+                    }
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"password\": \"NewSecurePass456!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/reset-password/TOKEN_ICI"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🔐 Personne 3 - Sessions & OAuth",
+            "item": [
+                {
+                    "name": "Token Refresh",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"REFRESH_TOKEN_ICI\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/refresh"
+                        }
+                    }
+                },
+                {
+                    "name": "Google OAuth Login",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/users/me",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "me"
-                            ]
+                            "raw": "{{base_url}}/api/auth/google"
+                        },
+                        "description": "Ouvrir cette URL dans le navigateur"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🛡️ Personne 4 - Double Authentification (2FA)",
+            "item": [
+                {
+                    "name": "Setup 2FA",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/2fa/setup"
                         }
-                    },
-                    "response": []
+                    }
                 },
                 {
-                    "name": "Update Me (Modifier Profil)",
+                    "name": "Enable 2FA",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"code\": \"123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/2fa/enable"
+                        }
+                    }
+                },
+                {
+                    "name": "Verify 2FA (TOTP Code)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"code\": \"123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/2fa/verify"
+                        }
+                    }
+                },
+                {
+                    "name": "Disable 2FA",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/2fa/disable"
+                        }
+                    }
+                },
+                {
+                    "name": "2FA Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/2fa/status"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "📊 Personne 5 - Profil & Monitoring",
+            "item": [
+                {
+                    "name": "Get My Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/me"
+                        }
+                    }
+                },
+                {
+                    "name": "Update My Profile",
                     "request": {
                         "method": "PATCH",
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"firstName\": \"Nouveau\",\n    \"lastName\": \"Nom\",\n    \"email\": \"test@example.com\"\n}",
+                            "raw": "{\n    \"firstName\": \"Nouveau\",\n    \"lastName\": \"Nom\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -98,43 +265,10 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/users/me",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "me"
-                            ]
+                            "raw": "{{base_url}}/users/me"
                         }
-                    },
-                    "response": []
+                    }
                 },
-                {
-                    "name": "Delete Me (Désactiver Compte)",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{base_url}}/api/users/me",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "me"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Sécurité",
-            "item": [
                 {
                     "name": "Change Password",
                     "request": {
@@ -142,7 +276,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"oldPassword\": \"AncienMpd123!\",\n    \"newPassword\": \"NouveauMdp123!\"\n}",
+                            "raw": "{\n    \"oldPassword\": \"SecurePass123!\",\n    \"newPassword\": \"SuperSecurePass789!\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -150,37 +284,59 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/users/change-password",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "change-password"
-                            ]
+                            "raw": "{{base_url}}/users/change-password"
                         }
-                    },
-                    "response": []
+                    }
                 },
                 {
-                    "name": "Login History (Historique)",
+                    "name": "Delete My Account (Soft Delete)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/me"
+                        }
+                    }
+                },
+                {
+                    "name": "Login History",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/users/login-history",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "login-history"
-                            ]
+                            "raw": "{{base_url}}/users/login-history"
                         }
-                    },
-                    "response": []
+                    }
+                },
+                {
+                    "name": "Sessions Monitoring",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/sessions"
+                        }
+                    }
+                },
+                {
+                    "name": "Revoke Other Sessions",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/sessions/revoke-others"
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users"
+                        }
+                    }
                 }
             ]
         }
@@ -195,26 +351,6 @@
             }
         ]
     },
-    "event": [
-        {
-            "listen": "prerequest",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
-            }
-        },
-        {
-            "listen": "test",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
-            }
-        }
-    ],
     "variable": [
         {
             "key": "base_url",
