@@ -1,5 +1,5 @@
-import { randomBytes, createHmac } from 'crypto'; // Correction : createHmac
-import jwt from 'jsonwebtoken'; // Ajout : indispensable pour generateJWTs
+import { randomBytes, createHash, createHmac } from 'crypto';
+import jwt from 'jsonwebtoken';
 import prisma from '#lib/prisma';
 import { logger } from '#lib/logger';
 import { config } from '#config/env';
@@ -32,7 +32,6 @@ class TokenService {
   generateSecureToken(data) {
     const timestamp = Date.now().toString();
     const payload = `${data}:${timestamp}`;
-    // Correction : Utilisation de createHmac
     const signature = createHmac('sha256', config.EMAIL_TOKEN_SECRET)
       .update(payload)
       .digest('hex');
