@@ -1,38 +1,40 @@
-# TP Node.js Express - Gestion de Profil & Sécurité
+# TP Node.js Express - Gestion de Profil & Sécurité Multi-Collaborateurs
 
-Ce projet est une API de gestion d'utilisateurs robuste construite avec Express, Prisma et Zod.
+Ce projet est une API de gestion d'utilisateurs robuste et sécurisée, construite avec Express, Prisma (SQLite) et Zod. Elle intègre des fonctionnalités avancées d'authentification, de sécurité et de monitoring développées en équipe.
 
-## Fonctionnalités (Personne 5)
+## 👥 Équipe et Contributions
 
-### 👤 Gestion du Profil
-- **Consultation** : `GET /api/users/me`
-- **Modification** : `PATCH /api/users/me` (Nom, Prénom, Email)
-- **Suppression** : `DELETE /api/users/me` (Désactivation de compte / Soft Delete)
+### 👤 Personne 1 : Authentification de Base
+- **Inscription** : `POST /api/auth/register` (Hachage Argon2).
+- **Connexion** : `POST /api/auth/login` (Génération de tokens JWT).
+- **Déconnexion** : `POST /api/auth/logout`.
 
-### 🔒 Sécurité & Authentification
-- **Changement de MDP** : `POST /api/users/change-password`
-- **Historique** : `GET /api/users/login-history` (Suivi des IP/Appareils)
-- **Protection Brute-Force** : Limitation des tentatives via `express-rate-limit`
-- **Gestion des Sessions** : Listing et révocation des tokens actifs
-- **Notifications** : Alertes email (Mailtrap) pour les actions sensibles (Login, Changement MDP)
-- **Conformité Specs** : Soft delete (`disabledAt`), logs d'échecs, vérification Blacklist.
+### 📧 Personne 2 : Sécurité Email
+- **Vérification Email** : Envoi de tokens de validation via Mailtrap.
+- **Réinitialisation de mot de passe** : Flux sécurisé `forgot-password` / `reset-password`.
+- **Nettoyage automatique** : Script de suppression des tokens expirés.
 
-🔐 Sessions & AuthentificationSociale (Personne 3)
-- **Maintien de Session** : Système de Refresh Token avec rotation automatique (chaque usage génère un nouveau token et invalide le précédent).
+### 🔐 Personne 3 : Maintien de Session & OAuth
+- **Rotation de Refresh Token** : Chaque usage génère un nouveau token et invalide le précédent pour prévenir le vol de session.
+- **Sécurité des Tokens** : Padding dynamique pour garantir des tokens > 1024 octets.
+- **Authentification Sociale** : Connexion via Google OAuth (Passport.js).
+- **Gestion Multi-Appareils** : Détection de l'IP et du User-Agent.
 
-- **Sécurité des Tokens** : Conformité avec l'exigence des tokens > 1024 octets via un padding dynamique.
+### 🛡️ Personne 4 : Double Authentification (2FA)
+- **TOTP (Google Authenticator)** : Configuration et activation du 2FA.
+- **Vérification** : Étape supplémentaire obligatoire après le login classique si activé.
+- **Endpoints** : Setup, Enable, Disable, Verify, Status.
 
-- **Authentification Sociale** : Connexion via Google OAuth avec création de compte automatique (sans mot de passe).
+### 📊 Personne 5 : Profil & Monitoring (Toi !)
+- **Gestion du Profil** : Consultation (`GET /me`) et mise à jour (`PATCH /me`) sécurisées.
+- **Soft Delete** : Désactivation de compte via `disabledAt` au lieu d'une suppression physique.
+- **Historique de Connexion** : Journal des accès (IP, Appareil, Succès/Échec).
+- **Nettoyage Prisma** : Utilisation stricte de clauses `select` pour ne jamais exposer le mot de passe.
+- **Invalidation Globale** : Révocation de toutes les sessions lors d'un changement de mot de passe.
 
-- **Gestion Multi-Appareils** : Listing des sessions actives avec détection de l'IP et du User-Agent.
+---
 
-### 📧 Intégration Équipe (Personne 2)
-- **Vérification Email** : Intégration du flux de validation par token.
-- **Service Email Unifié** : Utilisation d'un `EmailService` commun configuré pour Mailtrap.
-
-
-
-## Installation
+## 🚀 Installation
 
 1. **Cloner le projet**
    ```bash
@@ -46,28 +48,28 @@ Ce projet est une API de gestion d'utilisateurs robuste construite avec Express,
    ```
 
 3. **Configuration (.env)**
-   Créez un fichier `.env` à partir de l'exemple :
+   Créez un fichier `.env` indispensable au fonctionnement :
    ```env
    PORT=3000
    DATABASE_URL="file:./dev.db"
    JWT_SECRET="votre_secret_super_secure"
    NODE_ENV=development
 
-   # Mailtrap / SMTP (Indispensable pour tests)
+   # Mailtrap / SMTP (Configuration de l'équipe Personne 2)
    SMTP_HOST=sandbox.smtp.mailtrap.io
    SMTP_PORT=587
    SMTP_USER=votre_user
    SMTP_PASS=votre_pass
    SMTP_FROM=no-reply@votre-app.com
-   APP_NAME="TP NodeJS Express"
-   ```
- #Secrets Personne 1 & 3 (Doivent faire 256 caractères pour la conformité)
-ACCESS_TOKEN_SECRET="une_chaine_tres_longue_de_256_caracteres..."
-REFRESH_TOKEN_SECRET="une_autre_chaine_tres_longue_de_256_caracteres..."
 
-#Google OAuth (Personne 3)
-GOOGLE_CLIENT_ID="votre_client_id_google"
-GOOGLE_CLIENT_SECRET="votre_client_secret_google"
+   # Google OAuth (Configuration Personne 3)
+   GOOGLE_CLIENT_ID="votre_client_id"
+   GOOGLE_CLIENT_SECRET="votre_client_secret"
+
+   # Secrets JWT (256 octets recommandés pour la conformité)
+   ACCESS_TOKEN_SECRET="chaine_longue"
+   REFRESH_TOKEN_SECRET="chaine_longue"
+   ```
 
 4. **Base de données**
    ```bash
@@ -80,22 +82,54 @@ GOOGLE_CLIENT_SECRET="votre_client_secret_google"
    npm run dev
    ```
 
-## Documentation API
+---
 
-### Authentification requise (Bearer Token)
-Tous ces endpoints nécessitent un header `Authorization: Bearer <token>`.
+## 📖 Documentation API
 
+### Authentification & Sessions
 | Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/api/users/me` | Récupère le profil de l'utilisateur actuel |
-| PATCH | `/api/users/me` | Met à jour le profil (firstName, lastName, email) |
-| DELETE | `/api/users/me` | Désactive le compte (Soft Delete) |
-| POST | `/api/users/change-password/auth/refresh` | Change le mot de passe (oldPassword + newPassword), Renouvelle l'Access Token via un Refresh Token (Rotation incluse) |
-| GET | `/api/users/login-history/auth/google` | Liste l'historique des connexions (succès/échecs), Initie l'authentification via Google |
-| GET | `/api/users/sessions` | Liste les sessions actives (appareils connectés), Liste les sessions actives (IP, Appareil, Date) |
-| DELETE | `/api/users/sessions/:id` | Révoque une session spécifique |
-| DELETE | `/api/users/sessions/revoke-others` | Révoque toutes les autres sessions, Déconnecte tous les autres appareils connectés |
+|:---|:---|:---|
+| POST | `/api/auth/register` | Création de compte |
+| POST | `/api/auth/login` | Connexion (retourne Access + Refresh Token) |
+| POST | `/api/auth/logout` | Déconnexion et révocation du token |
+| POST | `/api/auth/refresh` | Rotation du Refresh Token |
+| GET | `/api/auth/google` | Initier la connexion Google OAuth |
 
+### Vérification & Mot de Passe
+| Méthode | Endpoint | Description |
+|:---|:---|:---|
+| POST | `/api/auth/verify-email/:token` | Validation du compte par email |
+| POST | `/api/auth/forgot-password` | Demande de réinitialisation |
+| POST | `/api/auth/reset-password/:token` | Mise à jour du MDP via token email |
+| POST | `/api/users/change-password` | Changer le MDP (authentifié + révocation sessions) |
 
-## Tests
-Une collection Postman est disponible dans le dossier `/docs` (ou via le fichier JSON à la racine).
+### Double Authentification (2FA)
+| Méthode | Endpoint | Description |
+|:---|:---|:---|
+| POST | `/api/2fa/setup` | Génère le secret QR Code |
+| POST | `/api/2fa/enable` | Active le 2FA définitivement |
+| POST | `/api/2fa/verify` | Vérifie le code TOTP (Post-login) |
+| POST | `/api/2fa/disable` | Désactive le 2FA |
+
+### Profil & Monitoring
+| Méthode | Endpoint | Description |
+|:---|:---|:---|
+| GET | `/api/users/me` | Profil de l'utilisateur connecté |
+| PATCH | `/api/users/me` | Mise à jour (firstName, lastName, email) |
+| DELETE | `/api/users/me` | Soft Delete (Désactivation du compte) |
+| GET | `/api/users/login-history` | Journal des connexions (Monitoring) |
+| GET | `/api/sessions` | Liste des sessions actives |
+| DELETE | `/api/sessions/revoke-others` | Déconnexion de tous les autres appareils |
+
+---
+
+## 🛡️ Mesures de Sécurité Implémentées
+- **Rate Limiting** : Protection contre le brute-force sur toutes les routes sensibles.
+- **Helmet & CORS** : Protection des headers et gestion des origines.
+- **Soft Delete** : Conservation des données pour conformité, mais accès bloqué.
+- **JWT Blacklisting** : Les tokens révoqués sont invalidés immédiatement.
+- **Password Hashing** : Utilisation d'Argon2 pour la résistance aux attaques hardware.
+- **Audit Logs** : Suivi des IPs et des User-Agents pour chaque connexion.
+
+## 🧪 Tests
+Une collection Postman mise à jour est disponible à la racine du projet sous le nom `TP_Express_All_Features.json`.
