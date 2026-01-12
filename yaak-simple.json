@@ -1,526 +1,168 @@
 {
   "yaakVersion": "2025.9.3",
   "yaakSchema": 4,
-  "timestamp": "2026-01-03T13:34:00.000000",
+  "timestamp": "2026-01-12T20:40:00.000Z",
   "resources": {
     "workspaces": [
       {
         "model": "workspace",
         "id": "wk_42F4yYeVNv",
-        "createdAt": "2025-12-17T05:39:40.773353700",
-        "updatedAt": "2025-12-17T05:39:40.773354500",
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "Yaak",
-        "encryptionKeyChallenge": null,
-        "settingValidateCertificates": true,
-        "settingFollowRedirects": true,
-        "settingRequestTimeout": 0
+        "name": "Yaak - TP Express (Global)"
       }
     ],
     "environments": [],
     "folders": [
       {
         "model": "folder",
-        "id": "fl_xxd8ZkP6wT",
-        "createdAt": "2026-01-02T11:26:28.343323900",
-        "updatedAt": "2026-01-02T11:27:20.912608600",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": null,
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "express-tp",
-        "sortPriority": -1767353188323.0
+        "id": "fl_main",
+        "name": "Express TP - Master",
+        "workspaceId": "wk_42F4yYeVNv"
       },
       {
         "model": "folder",
-        "id": "fl_vwSYNnG8vA",
-        "createdAt": "2025-12-17T12:37:36.271367200",
-        "updatedAt": "2025-12-17T12:38:18.304565700",
+        "id": "fl_p1",
+        "name": "Personne 1 - Auth Base",
         "workspaceId": "wk_42F4yYeVNv",
-        "folderId": null,
-        "authentication": {},
-        "authenticationType": null,
-        "description": "",
-        "headers": [],
-        "name": "Router",
-        "sortPriority": 1000.0
+        "folderId": "fl_main"
       },
       {
         "model": "folder",
-        "id": "fl_personne2_simple",
-        "name": "Personne 2 - Email Verification",
+        "id": "fl_p2",
+        "name": "Personne 2 - Emails & Tokens",
         "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "description": "Endpoints pour la vérification email et gestion des tokens",
-        "sortPriority": -2000.0
+        "folderId": "fl_main"
+      },
+      {
+        "model": "folder",
+        "id": "fl_p3",
+        "name": "Personne 3 - Sessions & OAuth",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_main"
+      },
+      {
+        "model": "folder",
+        "id": "fl_p4",
+        "name": "Personne 4 - Double Auth (2FA)",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_main"
+      },
+      {
+        "model": "folder",
+        "id": "fl_p5",
+        "name": "Personne 5 - Profil & Monitoring",
+        "workspaceId": "wk_42F4yYeVNv",
+        "folderId": "fl_main"
       }
     ],
     "httpRequests": [
       {
         "model": "http_request",
-        "id": "rq_ZELJSKruJQ",
-        "createdAt": "2026-01-02T14:19:01.732342400",
-        "updatedAt": "2026-01-02T14:21:00.785550900",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "authentication": {
-          "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJmNDA0ZmU1MS03OTA3LTQwNzItYmEyMC1lYTRkMjI5MGI0MTQiLCJpYXQiOjE3NjczNjM1MDUsImV4cCI6MTc2NzM2NDQwNX0.IrzmMvMGr4bOLk57TLTwvXjOKXJu1P04xjAYzx76eLg"
-        },
-        "authenticationType": "bearer",
-        "body": {
-          "text": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJmNDA0ZmU1MS03OTA3LTQwNzItYmEyMC1lYTRkMjI5MGI0MTQiLCJpYXQiOjE3NjczNjM1MDUsImV4cCI6MTc2NzM2NDQwNX0.YQpU0R2RHnsZYFYHy-TkMBdDRUUbLszXPTQyDOHXjHw\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "ciGy2qNFvI"
-          }
-        ],
-        "method": "POST",
-        "name": "Logout",
-        "sortPriority": -1767355770992.0,
-        "url": "http://localhost:3000/logout",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_tGvMWhf8h5",
-        "createdAt": "2026-01-02T12:25:25.727300600",
-        "updatedAt": "2026-01-02T17:07:32.929954800",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "authentication": {
-          "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJmNDA0ZmU1MS03OTA3LTQwNzItYmEyMC1lYTRkMjI5MGI0MTQiLCJpYXQiOjE3NjczNzM2MDcsImV4cCI6MTc2NzM3NDUwN30.kPn2eLzaBfAwA0F2oNVR2hJPgt-UHE5N1AWwYCzbR0I"
-        },
-        "authenticationType": "bearer",
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Get Users",
-        "sortPriority": -1767355770992.0,
-        "url": "http://localhost:3000/users",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_Ga3b5dX8iJ",
-        "createdAt": "2026-01-02T12:14:08.409873400",
-        "updatedAt": "2026-01-02T12:16:41.179854500",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "authentication": {
-          "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJmNDA0ZmU1MS03OTA3LTQwNzItYmEyMC1lYTRkMjI5MGI0MTQiLCJpYXQiOjE3NjczNTYwNDAsImV4cCI6MTc2NzM1Njk0MH0.lfYsEzNPDhR6vwvsapGBNxlbRqUThf9eEGuA0wSHFI0"
-        },
-        "authenticationType": "bearer",
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Get User by ID",
-        "sortPriority": -1767355770992.0,
-        "url": "http://localhost:3000/users/f404fe51-7907-4072-ba20-ea4d2290b414",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_AobyX2ub5v",
-        "createdAt": "2026-01-02T12:13:09.866312",
-        "updatedAt": "2026-01-02T17:06:42.994247900",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"email\": \"test.user@gmail.com\",\n  \"password\": \"Password123!\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "tCYyprJHbp"
-          }
-        ],
-        "method": "POST",
-        "name": "Login",
-        "sortPriority": -1767355770992.0,
-        "url": "http://localhost:3000/login",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_gQTU4qvGb3",
-        "createdAt": "2026-01-02T12:09:30.994679500",
-        "updatedAt": "2026-01-02T12:12:29.056125",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {
-          "text": "{\n  \"email\": \"test.user@gmail.com\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"Dupont\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "s7X2We9EBi"
-          }
-        ],
-        "method": "POST",
+        "id": "rq_p1_reg",
         "name": "Register",
-        "sortPriority": -1767355770992.0,
-        "url": "http://localhost:3000/register",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_THDDMRRoLf",
-        "createdAt": "2025-12-17T12:36:08.104205100",
-        "updatedAt": "2025-12-17T12:38:00.535873100",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_vwSYNnG8vA",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "Home",
-        "sortPriority": 1000.0,
-        "url": "http://localhost:3000/",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_BgRe35nNym",
-        "createdAt": "2025-12-17T12:34:23.703616600",
-        "updatedAt": "2025-12-17T12:38:00.506989200",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_vwSYNnG8vA",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "DELETE",
-        "name": "Delete",
-        "sortPriority": 0.0,
-        "url": "http://localhost:3000/delete",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_4QVunKmH3G",
-        "createdAt": "2025-12-17T12:33:22.908203700",
-        "updatedAt": "2025-12-17T12:38:00.560213400",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_vwSYNnG8vA",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "GET",
-        "name": "API",
-        "sortPriority": 3000.0,
-        "url": "http://localhost:3000/api",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_wL8etmzvx2",
-        "createdAt": "2025-12-17T12:32:45.322167500",
-        "updatedAt": "2025-12-17T12:38:00.572105400",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_vwSYNnG8vA",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
-        "method": "PUT",
-        "name": "Put",
-        "sortPriority": 4000.0,
-        "url": "http://localhost:3000/put",
-        "urlParameters": []
-      },
-      {
-        "model": "http_request",
-        "id": "rq_BYhDiH6dSp",
-        "createdAt": "2025-12-17T12:29:32.633682200",
-        "updatedAt": "2025-12-17T12:38:00.583504200",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_vwSYNnG8vA",
-        "authentication": {},
-        "authenticationType": null,
-        "body": {},
-        "bodyType": null,
-        "description": "",
-        "headers": [],
         "method": "POST",
-        "name": "Post",
-        "sortPriority": 5000.0,
-        "url": "http://localhost:3000/post",
-        "urlParameters": []
+        "url": "http://localhost:3000/register",
+        "folderId": "fl_p1",
+        "body": {
+          "text": "{\n  \"email\": \"test.user@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\"\n}"
+        },
+        "bodyType": "application/json"
       },
       {
         "model": "http_request",
-        "id": "rq_resend_simple",
-        "name": "Renvoyer Email Vérification",
+        "id": "rq_p1_login",
+        "name": "Login",
+        "method": "POST",
+        "url": "http://localhost:3000/login",
+        "folderId": "fl_p1",
+        "body": {
+          "text": "{\n  \"email\": \"test.user@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+        },
+        "bodyType": "application/json"
+      },
+      {
+        "model": "http_request",
+        "id": "rq_p1_logout",
+        "name": "Logout",
+        "method": "POST",
+        "url": "http://localhost:3000/logout",
+        "folderId": "fl_p1"
+      },
+      {
+        "model": "http_request",
+        "id": "rq_p2_resend",
+        "name": "Resend Verification",
         "method": "POST",
         "url": "http://localhost:3000/api/auth/resend-verification",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
+        "folderId": "fl_p2",
         "body": {
-          "text": "{\n  \"email\": \"test@example.com\"\n}"
+          "text": "{\n  \"email\": \"test.user@example.com\"\n}"
         },
-        "bodyType": "application/json",
-        "description": "Renvoie un email de vérification à l'adresse spécifiée",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_1"
-          }
-        ],
-        "sortPriority": -100.0
+        "bodyType": "application/json"
       },
       {
         "model": "http_request",
-        "id": "rq_verify_simple",
-        "name": "Vérifier Email",
+        "id": "rq_p2_verify",
+        "name": "Verify Email",
         "method": "POST",
         "url": "http://localhost:3000/api/auth/verify-email/TOKEN_ICI",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
-        "body": {},
-        "bodyType": null,
-        "description": "Vérifie l'email avec le token reçu. Remplacez TOKEN_ICI par le token reçu dans l'email",
-        "headers": [],
-        "sortPriority": -90.0
+        "folderId": "fl_p2"
       },
       {
         "model": "http_request",
-        "id": "rq_forgot_simple",
-        "name": "Demander Réinitialisation MDP",
+        "id": "rq_p3_refresh",
+        "name": "Token Refresh",
         "method": "POST",
-        "url": "http://localhost:3000/api/auth/forgot-password",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
+        "url": "http://localhost:3000/api/auth/refresh",
+        "folderId": "fl_p3",
         "body": {
-          "text": "{\n  \"email\": \"test@example.com\"\n}"
+          "text": "{\n  \"refreshToken\": \"REFRESH_TOKEN_ICI\"\n}"
         },
-        "bodyType": "application/json",
-        "description": "Demande une réinitialisation de mot de passe",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_2"
-          }
-        ],
-        "sortPriority": -80.0
+        "bodyType": "application/json"
       },
       {
         "model": "http_request",
-        "id": "rq_reset_simple",
-        "name": "Réinitialiser Mot de Passe",
+        "id": "rq_p4_setup",
+        "name": "Setup 2FA",
         "method": "POST",
-        "url": "http://localhost:3000/api/auth/reset-password/TOKEN_ICI",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
+        "url": "http://localhost:3000/api/2fa/setup",
+        "folderId": "fl_p4"
+      },
+      {
+        "model": "http_request",
+        "id": "rq_p4_enable",
+        "name": "Enable 2FA",
+        "method": "POST",
+        "url": "http://localhost:3000/api/2fa/enable",
+        "folderId": "fl_p4",
         "body": {
-          "text": "{\n  \"password\": \"NouveauMotDePasse123!\"\n}"
+          "text": "{\n  \"code\": \"123456\"\n}"
         },
-        "bodyType": "application/json",
-        "description": "Réinitialise le mot de passe avec le token reçu. Remplacez TOKEN_ICI par le token reçu dans l'email",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_3"
-          }
-        ],
-        "sortPriority": -70.0
+        "bodyType": "application/json"
       },
       {
         "model": "http_request",
-        "id": "rq_cleanup_simple",
-        "name": "Nettoyer Tokens Expirés",
-        "method": "POST",
-        "url": "http://localhost:3000/api/auth/cleanup-tokens",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
-        "body": {},
-        "bodyType": null,
-        "description": "Nettoie tous les tokens expirés de la base de données",
-        "headers": [],
-        "sortPriority": -60.0
+        "id": "rq_p5_me",
+        "name": "Get My Profile",
+        "method": "GET",
+        "url": "http://localhost:3000/users/me",
+        "folderId": "fl_p5"
       },
       {
         "model": "http_request",
-        "id": "rq_register_user1",
-        "name": "Register - Alice Martin",
-        "method": "POST",
-        "url": "http://localhost:3000/register",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "body": {
-          "text": "{\n  \"email\": \"alice.martin@example.com\",\n  \"password\": \"AlicePassword123!\",\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Martin\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Créer un compte pour Alice Martin - Test email verification workflow",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_alice"
-          }
-        ],
-        "sortPriority": -50.0
+        "id": "rq_p5_history",
+        "name": "Login History",
+        "method": "GET",
+        "url": "http://localhost:3000/users/login-history",
+        "folderId": "fl_p5"
       },
       {
         "model": "http_request",
-        "id": "rq_register_user2",
-        "name": "Register - Bob Wilson",
-        "method": "POST",
-        "url": "http://localhost:3000/register",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "body": {
-          "text": "{\n  \"email\": \"bob.wilson@example.com\",\n  \"password\": \"BobPassword123!\",\n  \"firstName\": \"Bob\",\n  \"lastName\": \"Wilson\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Créer un compte pour Bob Wilson - Test email verification workflow",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_bob"
-          }
-        ],
-        "sortPriority": -45.0
-      },
-      {
-        "model": "http_request",
-        "id": "rq_register_user3",
-        "name": "Register - Claire Dubois",
-        "method": "POST",
-        "url": "http://localhost:3000/register",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "body": {
-          "text": "{\n  \"email\": \"claire.dubois@example.com\",\n  \"password\": \"ClairePassword123!\",\n  \"firstName\": \"Claire\",\n  \"lastName\": \"Dubois\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Créer un compte pour Claire Dubois - Test email verification workflow",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_claire"
-          }
-        ],
-        "sortPriority": -40.0
-      },
-      {
-        "model": "http_request",
-        "id": "rq_login_alice",
-        "name": "Login - Alice Martin",
-        "method": "POST",
-        "url": "http://localhost:3000/login",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_xxd8ZkP6wT",
-        "body": {
-          "text": "{\n  \"email\": \"alice.martin@example.com\",\n  \"password\": \"AlicePassword123!\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Tenter de se connecter avec Alice - Devrait échouer (email non vérifié)",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_login_alice"
-          }
-        ],
-        "sortPriority": -35.0
-      },
-      {
-        "model": "http_request",
-        "id": "rq_resend_alice",
-        "name": "Resend Verification - Alice",
-        "method": "POST",
-        "url": "http://localhost:3000/api/auth/resend-verification",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
-        "body": {
-          "text": "{\n  \"email\": \"alice.martin@example.com\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Renvoyer l'email de vérification pour Alice",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_resend_alice"
-          }
-        ],
-        "sortPriority": -30.0
-      },
-      {
-        "model": "http_request",
-        "id": "rq_forgot_bob",
-        "name": "Forgot Password - Bob Wilson",
-        "method": "POST",
-        "url": "http://localhost:3000/api/auth/forgot-password",
-        "workspaceId": "wk_42F4yYeVNv",
-        "folderId": "fl_personne2_simple",
-        "body": {
-          "text": "{\n  \"email\": \"bob.wilson@example.com\"\n}"
-        },
-        "bodyType": "application/json",
-        "description": "Demander une réinitialisation de mot de passe pour Bob",
-        "headers": [
-          {
-            "enabled": true,
-            "name": "Content-Type",
-            "value": "application/json",
-            "id": "hdr_content_type_forgot_bob"
-          }
-        ],
-        "sortPriority": -25.0
+        "id": "rq_p5_sessions",
+        "name": "Sessions Monitoring",
+        "method": "GET",
+        "url": "http://localhost:3000/api/sessions",
+        "folderId": "fl_p5"
       }
-    ],
-    "grpcRequests": [],
-    "websocketRequests": []
+    ]
   }
 }
