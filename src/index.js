@@ -10,6 +10,9 @@ import { errorHandler } from "#middlewares/error-handler";
 import { notFoundHandler } from "#middlewares/not-found";
 import userRouter from "#routes/user.routes";
 import authRouter from "#routes/auth.routes";
+import twoFactorRouter from "#routes/twoFactor.routes";
+import sessionsRouter from "#routes/sessions.routes"; 
+import "./config/passport.js";
 import { config } from "#config/env";
 import { globalLimiter } from "#middlewares/rate-limit";
 
@@ -32,6 +35,8 @@ app.get("/", (req, res) => {
 app.use("/users", userRouter);
 app.use("/api/auth", authRouter); // Routes authentifiées
 app.use("/", authRouter); // Routes register/login à la racine
+app.use("/api/2fa", twoFactorRouter); // Routes 2FA (Personne 4)
+app.use("/api/sessions", sessionsRouter);
 
 // 404 handler
 app.use(notFoundHandler);
