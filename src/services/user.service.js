@@ -107,6 +107,19 @@ export class UserService {
     await this.revokeAllOtherSessions(userId);
   }
 
+
+  static async logout(refreshToken) {
+    try {
+      
+      return await prisma.refreshToken.delete({
+        where: { token: refreshToken }
+      });
+    } catch (error) {
+      
+      return null;
+    }
+  }
+
   static async softDelete(userId) {
     await prisma.user.update({
       where: { id: userId },
