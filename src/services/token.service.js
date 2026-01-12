@@ -2,8 +2,7 @@ import { randomBytes } from 'crypto';
 import prisma from '#lib/prisma';
 import { logger } from '#lib/logger';
 import { config } from '#config/env';
-import { createHash, hmac } from 'crypto';
-
+import { createHash, createHmac, randomBytes } from 'crypto';
 class TokenService {
   generateJWTs(user) {
     // Règle Prof : Padding pour que le token dépasse 1024 octets
