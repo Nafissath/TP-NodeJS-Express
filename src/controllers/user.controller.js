@@ -37,6 +37,15 @@ export class UserController {
 
       const user = await UserService.login(email, password);
       
+      // Vérifier si l'email est vérifié
+      if (!user.emailVerifiedAt) {
+        return res.status(403).json({
+          success: false,
+          message: "Veuillez vérifier votre email avant de vous connecter",
+          code: "EMAIL_NOT_VERIFIED"
+        });
+      }
+      
       const accessToken = await signAccessToken({ userId: user.id });
       const refreshToken = await signRefreshToken({ userId: user.id });
 
@@ -51,8 +60,27 @@ export class UserController {
         accessToken,
         refreshToken,
       });
+
+      // Notification de connexion
+      EmailService.sendNewLoginAlert(user.email, {
+        ip: req.ip || "127.0.0.1",
+        userAgent: req.headers["user-agent"] || "unknown",
+        date: new Date().toLocaleString(),
+      });
     } catch (error) {
-      res.status(401).json({ success: false, message: error.message });
+      // Si l'utilisateur existe mais le MDP est faux, on log l'échec
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (user) {
+        await prisma.loginHistory.create({
+          data: {
+            userId: user.id,
+            ipAddress: req.ip || "127.0.0.1",
+            userAgent: req.headers["user-agent"] || "unknown",
+            success: false
+          }
+        });
+      }
+      throw error; // On laisse le gestionnaire d'erreurs global répondre 401
     }
   }
 
