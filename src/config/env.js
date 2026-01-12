@@ -19,4 +19,9 @@ export const config = {
   // Configuration 2FA (Personne 4)
   TWO_FACTOR_APP_NAME: process.env.TWO_FACTOR_APP_NAME || 'TP-NodeJS-Express',
   TWO_FACTOR_ISSUER: process.env.TWO_FACTOR_ISSUER || 'TP-NodeJS-Express',
+
+// --- CONFIGURATION OAUTH (Personne 3) ---
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/api/auth/google/callback',
 };
