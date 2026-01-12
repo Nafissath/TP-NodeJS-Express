@@ -36,7 +36,7 @@ export class UserController {
       const user = await UserService.login(email, password);
 
       // Vérifier si l'email est vérifié
-      if (!user.emailVerified) {
+      if (!user.emailVerifiedAt) {
         return res.status(403).json({
           success: false,
           message: "Veuillez vérifier votre email avant de vous connecter",
