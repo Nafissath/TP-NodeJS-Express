@@ -12,6 +12,7 @@ const router = Router();
 // Routes Personne 1 (existantes)
 router.post("/register", authLimiter, asyncHandler(UserController.register));
 router.post("/login", authLimiter, asyncHandler(UserController.login));
+router.post("/login/2fa", authLimiter, asyncHandler(UserController.verifyLogin2FA));
 router.post("/logout", auth, asyncHandler(UserController.logout));
 
 // Routes Personne 2 - Vérification Email & Tokens
@@ -25,7 +26,7 @@ router.post("/cleanup-tokens", authLimiter, asyncHandler(cleanupTokens));
 
 router.post("/refresh", authLimiter, asyncHandler(RefreshController.refresh));
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-router.get("/google/callback", 
+router.get("/google/callback",
     passport.authenticate("google", { session: false, failureRedirect: "/login" }),
     asyncHandler(OAuthController.googleCallback)
 );

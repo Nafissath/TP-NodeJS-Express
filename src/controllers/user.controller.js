@@ -6,6 +6,9 @@ import { validateData } from "#lib/validate";
 import prisma from "#lib/prisma";
 import EmailService from "#services/email.service";
 import { tokenService } from "#services/token.service";
+import { TwoFactorService } from "#services/twoFactor.service";
+import { UnauthorizedException } from "#lib/exceptions";
+import { z } from "zod";
 
 export class UserController {
   static async register(req, res) {
@@ -36,7 +39,7 @@ export class UserController {
       const { email, password } = validatedData;
 
       const user = await UserService.login(email, password);
-      
+
       // Vérifier si l'email est vérifié
       if (!user.emailVerifiedAt) {
         return res.status(403).json({
@@ -45,7 +48,18 @@ export class UserController {
           code: "EMAIL_NOT_VERIFIED"
         });
       }
-      
+
+      // --- LOGIC 2FA INTERCEPTION ---
+      if (user.twoFactorEnabledAt) {
+        const mfaToken = tokenService.generateMfaToken(user.id);
+        return res.json({
+          success: true,
+          mfaRequired: true,
+          mfaToken,
+          message: "Code 2FA requis"
+        });
+      }
+
       const accessToken = await signAccessToken({ userId: user.id });
       const refreshToken = await signRefreshToken({ userId: user.id });
 
@@ -108,6 +122,34 @@ export class UserController {
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }
+  }
+
+  static async verifyLogin2FA(req, res) {
+    const { mfaToken, code } = req.body;
+    if (!mfaToken || !code) throw new UnauthorizedException("Paramètres manquants");
+
+    const decoded = tokenService.verifyMfaToken(mfaToken);
+    if (!decoded) throw new UnauthorizedException("Session 2FA expirée ou invalide");
+
+    const isValid = await TwoFactorService.verifyToken(decoded.userId, code, false);
+    if (!isValid) throw new UnauthorizedException("Code 2FA invalide");
+
+    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+
+    const accessToken = await signAccessToken({ userId: user.id });
+    const refreshToken = await signRefreshToken({ userId: user.id });
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await UserService.createRefreshToken(user.id, refreshToken, expiresAt, req.ip, req.headers["user-agent"]);
+
+    res.json({
+      success: true,
+      user: UserDto.transform(user),
+      accessToken,
+      refreshToken,
+    });
   }
 
   static async getAll(req, res) {

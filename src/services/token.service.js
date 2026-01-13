@@ -24,6 +24,24 @@ class TokenService {
     return { accessToken, refreshToken };
   }
 
+  generateMfaToken(userId) {
+    return jwt.sign(
+      { userId, type: 'mfa_pending' },
+      config.ACCESS_TOKEN_SECRET,
+      { expiresIn: '5m' }
+    );
+  }
+
+  verifyMfaToken(token) {
+    try {
+      const payload = jwt.verify(token, config.ACCESS_TOKEN_SECRET);
+      if (payload.type !== 'mfa_pending') return null;
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
   generateToken() {
     return randomBytes(32).toString('hex');
   }
@@ -45,11 +63,11 @@ class TokenService {
     const expectedSignature = createHmac('sha256', config.EMAIL_TOKEN_SECRET)
       .update(payload)
       .digest('hex');
-    
+
     if (signature !== expectedSignature) {
       throw new Error('Token invalide - signature incorrecte');
     }
-    
+
     return { data, timestamp: parseInt(timestamp) };
   }
 
@@ -126,7 +144,12 @@ class TokenService {
     const now = new Date();
     const delVerif = await prisma.verificationToken.deleteMany({ where: { expiresAt: { lt: now } } });
     const delReset = await prisma.passwordResetToken.deleteMany({ where: { expiresAt: { lt: now } } });
-    return { verificationTokensDeleted: delVerif.count, resetTokensDeleted: delReset.count };
+    const delBlacklist = await prisma.blacklistedAccessToken.deleteMany({ where: { expiresAt: { lt: now } } });
+    return {
+      verificationTokensDeleted: delVerif.count,
+      resetTokensDeleted: delReset.count,
+      blacklistedTokensDeleted: delBlacklist.count
+    };
   }
 }
 
