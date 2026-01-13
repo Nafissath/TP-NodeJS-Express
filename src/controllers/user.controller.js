@@ -68,6 +68,15 @@ export class UserController {
 
       await UserService.createRefreshToken(user.id, refreshToken, expiresAt, req.ip, req.headers["user-agent"]);
 
+      await prisma.loginHistory.create({
+        data: {
+          userId: user.id,
+          ipAddress: req.ip || "127.0.0.1",
+          userAgent: req.headers["user-agent"] || "unknown",
+          success: true // <--- On marque le succès ici
+        }
+      });
+
       res.json({
         success: true,
         user: UserDto.transform(user),

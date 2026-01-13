@@ -17,16 +17,16 @@ const generateTestToken = (user) => {
     );
 };
 
-console.log("--- 🧪 TEST DE CONFORMITÉ PERSONNE 3 ---");
+console.log("--- TEST DE CONFORMITÉ PERSONNE 3 ---");
 
 const user = { id: "123", email: "test@example.com" };
 const token = generateTestToken(user);
 const size = Buffer.byteLength(token, 'utf8');
 
-console.log(`📏 Taille du token : ${size} octets`);
+console.log(` Taille du token : ${size} octets`);
 
 if (size > 1024) {
-    console.log("✅ SUCCÈS : Le token dépasse 1024 octets (Contrainte respectée).");
+    console.log(" SUCCÈS : Le token dépasse 1024 octets (Contrainte respectée).");
 } else {
-    console.log("❌ ÉCHEC : Le token est trop petit.");
+    console.log(" ÉCHEC : Le token est trop petit.");
 }

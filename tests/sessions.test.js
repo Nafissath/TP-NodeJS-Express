@@ -1,4 +1,4 @@
-console.log("--- 🧪 TEST : GESTION DES SESSIONS MULTIPLES ---");
+console.log("--- TEST : GESTION DES SESSIONS MULTIPLES ---");
 
 // Simulation de plusieurs appareils connectés pour un même utilisateur
 let userSessions = [
@@ -18,7 +18,7 @@ const revokeOthers = (currentSessionId) => {
         }
     });
     
-    console.log(`✅ Résultat : ${count} sessions ont été révoquées.`);
+    console.log(`Résultat : ${count} sessions ont été révoquées.`);
 };
 
 // --- SCÉNARIO ---
@@ -33,5 +33,5 @@ userSessions.forEach(s => {
 });
 
 if (userSessions.filter(s => !s.revokedAt).length === 1) {
-    console.log("\n🏆 TEST RÉUSSI : La révocation sélective fonctionne.");
+    console.log("\nTEST RÉUSSI : La révocation sélective fonctionne.");
 }

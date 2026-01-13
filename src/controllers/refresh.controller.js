@@ -24,7 +24,7 @@ export class RefreshController {
 
     try {
       const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET);
-      const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+      const user = await prisma.user.findUnique({ where: { id: decoded.userId} });
       const tokens = tokenService.generateJWTs(user);
 
       await prisma.refreshToken.create({
